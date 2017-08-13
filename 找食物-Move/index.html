@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script type="text/javascript">
+    ;
+    (function(designWidth, rem2px) {
+      var d = window.document.createElement('div');
+      d.style.width = '1rem';
+      d.style.display = "none";
+      var head = window.document.getElementsByTagName('head')[0];
+      head.appendChild(d);
+      var defaultFontSize = parseFloat(window.getComputedStyle(d, null).getPropertyValue('width'));
+      var st = document.createElement('style');
+
+      var portrait = "@media screen and (min-width: " + window.innerWidth + "px) {html{font-size:" + ((window.innerWidth / (designWidth / rem2px) / defaultFontSize) * 100) + "%;}}";
+      var landscape = "@media screen and (min-width: " + window.innerHeight + "px) {html{font-size:" + ((window.innerHeight / (designWidth / rem2px) / defaultFontSize) * 100) + "%;}}";
+      st.innerHTML = portrait + landscape;
+      head.appendChild(st);
+      return defaultFontSize
+    })(640, 100);
+  </script>
+  <title>移动</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    html,
+    body {
+      width: 6.4rem;
+      height: 11.36rem;
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+    }
+
+    #div1 {
+      width: 0.5rem;
+      height: .5rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+    }
+
+    #div1 img {
+      width: 1rem;
+      height: 1rem;
+      display: block
+    }
+
+    #div2 {
+      width: 1rem;
+      height: 1rem;
+      background: blue;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 0;
+    }
+
+    #div3 {
+      width: 1rem;
+      height: 0.1rem;
+      /*background: yellow;*/
+      position: absolute;
+      right: 0;
+      top: 1rem;
+      /*display: none;*/
+      z-index: -999999;
+    }
+
+    #div5 {
+      width: 0;
+      height: 0;
+      /*background: #000;*/
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: -1;
+    }
+
+    #div6 {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2rem;
+      height: 2rem;
+      margin-left: -1rem;
+      margin-top: -1rem;
+      background: #0f0;
+      opacity: 0;
+      display: none;
+    }
+
+    #div6 img {
+      width: 100%;
+      height: 100%;
+      display: block
+    }
+  </style>
+</head>
+
+<body>
+  <div id="div1">
+    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502624667006&di=84437992b6477f69f3f31238f046453e&imgtype=0&src=http%3A%2F%2Fdynamic-image.yesky.com%2F220x165%2FuploadImages%2F2015%2F120%2F32%2FOVW361M75WKG.jpg" alt="">
+  </div>
+  <div id="div2"></div>
+  <div id="div3"></div>
+  <div id="div5"></div>
+  <div id="div6">
+    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502624667006&di=84437992b6477f69f3f31238f046453e&imgtype=0&src=http%3A%2F%2Fdynamic-image.yesky.com%2F220x165%2FuploadImages%2F2015%2F120%2F32%2FOVW361M75WKG.jpg" alt="">
+  </div>
+
+  <audio id="audio" src="2.mp3">
+</body>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+  window.onload = function() {
+    var oDiv = document.querySelector('#div1');
+    var oDiv1 = document.querySelector('#div2');
+    var oDiv3 = document.querySelector('#div3');
+    var audio=document.querySelector('#audio');
+    var x=0;
+    var y=0;
+      oDiv.addEventListener('touchstart', function(ev){
+              var disX=ev.targetTouches[0].pageX-x;
+              var disY=ev.targetTouches[0].pageY-y;
+              // 当前手指的ID
+              var id=ev.targetTouches[0].identifier;
+              function fnMove(ev){
+                  // 判断是否是这根手指
+                  if(ev.targetTouches[0].identifier==id){
+                      x=ev.targetTouches[0].pageX-disX;
+                      y=ev.targetTouches[0].pageY-disY;
+                      oDiv.style.left=x+'px';
+                      oDiv.style.top=y+'px';
+                  }
+              }
+              function fnEnd(ev){
+                  if(ev.changedTouches[0].identifier==id){
+                      document.removeEventListener('touchmove', fnMove, false);
+                      document.removeEventListener('touchend', fnEnd, false);
+
+                      if(collTest(oDiv, oDiv3)){
+                        var bbb=oDiv3.offsetLeft;
+                        var ccc=oDiv3.offsetTop;
+                        $('#div1').animate({
+                          'left':bbb,
+                          'top':ccc
+                        },function(){
+                          $('#div5').css({
+                            'width': '1rem',
+                            'height': '2rem',
+                            "z-index":"999"
+                          })
+                        })
+                      }else{
+                        x=0;
+                        y=0;
+                        $('#div1').animate({
+                          'left':'0',
+                          'top':'0'
+                        })
+
+                      }
+                  }
+
+              }
+              document.addEventListener('touchmove', fnMove, false);
+              document.addEventListener('touchend', fnEnd, false);
+
+              ev.preventDefault();
+          }, false);
+      }
+
+  //碰撞检测
+  function collTest(obj1, obj2) {
+    var obj1L = obj1.offsetLeft;
+    var obj1R = obj1.offsetLeft + obj1.offsetWidth;
+    var obj1T = obj1.offsetTop;
+    var obj1B = obj1.offsetTop + obj1.offsetHeight;
+
+    var obj2L = obj2.offsetLeft;
+    var obj2R = obj2.offsetLeft + obj2.offsetWidth;
+    var obj2T = obj2.offsetTop;
+    var obj2B = obj2.offsetTop + obj2.offsetHeight;
+
+    if (obj1L > obj2R || obj1R < obj2L || obj1T > obj2B || obj1B < obj2T) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+
+  $('#div5').on('click',function(){
+    audio.play();
+    $('#div6').css({
+      'display': 'block'
+    }).fadeTo('slow',1,function(){
+      alert("恭喜你闯关成功！")
+    })
+  })
+</script>
+
+</html>
